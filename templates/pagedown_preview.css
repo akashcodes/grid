@@ -1,0 +1,124 @@
+blockquote {
+	border-left: 2px dotted #888;
+	padding-left: 5px;
+	background: #d0f0ff;
+}
+
+.mkl-panel
+{
+	margin-left: 25%;
+	margin-right: 25%;
+	width: 50%;
+	min-width: 500px;
+}
+
+.mkl-button-bar 
+{
+	width: 100%;
+	background-color: Silver; 
+}
+
+.mkl-input 
+{ 
+	height: 300px;
+	width: 100%;
+	background-color: #fafafa;
+	border: 1px solid DarkGray;
+}
+
+.mkl-preview 
+{ 
+	background-color: #c0e0ff; 
+}
+
+.mkl-preview code {
+	background-color: #999999;
+}
+
+.mkl-button-row 
+{
+	position: relative; 
+	margin-left: 5px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	margin-top: 10px;
+	padding: 0px;  
+	height: 20px;
+}
+
+.mkl-spacer
+{
+	width: 1px; 
+	height: 20px; 
+	margin-left: 14px;
+	
+	position: absolute;
+	background-color: Silver;
+	display: inline-block; 
+	list-style: none;
+}
+
+.mkl-button {
+    width: 20px;
+    height: 20px;
+    padding-left: 2px;
+    padding-right: 3px;
+    position: absolute;
+    display: inline-block;
+    list-style: none;
+    cursor: pointer;
+}
+
+.mkl-button > span {
+    background-image: url(mkl-buttons.png);
+    background-repeat: no-repeat;
+    background-position: 0px 0px;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
+
+.mkl-spacer1
+{
+    left: 50px;
+}
+.mkl-spacer2
+{
+    left: 175px;
+}
+.mkl-spacer3
+{
+    left: 300px;
+}
+
+
+
+
+.mkl-prompt-background
+{
+	background-color: Black;
+}
+
+.mkl-prompt-dialog
+{
+	border: 1px solid #999999;
+	background-color: #F5F5F5;
+}
+
+.mkl-prompt-dialog > div {
+	font-size: 0.8em;
+	font-family: arial, helvetica, sans-serif;
+}
+
+
+.mkl-prompt-dialog > form > input[type="text"] {
+	border: 1px solid #999999;
+	color: black;
+}
+
+.mkl-prompt-dialog > form > input[type="button"]{
+	border: 1px solid #888888;
+	font-family: trebuchet MS, helvetica, sans-serif;
+	font-size: 0.8em;
+	font-weight: bold;
+}

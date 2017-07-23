@@ -1,0 +1,117 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        {% block head %}
+        {% endblock %}
+        <link type="text/css" rel="stylesheet" href="{% static 'base/base.css' %}" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+        {% if preview %}
+        <link rel="stylesheet" href="{% static 'pagedown/pagedown_preview.css' %}" />
+        {% endif %}
+
+        {% if editor %}
+        <link rel="stylesheet" href="{% static 'pagedown/pagedown.css' %}" />
+        {% endif %}
+
+        <style>
+            #header {
+                position: fixed;
+                top: 0px;
+                width: 100vw;
+                height: 4vw;
+                background-color: #ffffff;
+                z-index: 99;
+            }
+
+            #header a {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                display: inline-block;
+                text-decoration: none;
+                color: #637893;
+            }
+
+            #header a:hover {
+                cursor: pointer;
+            }
+
+            #header #report-bug {
+                left: 20vw;
+            }
+
+            #header #header-search {
+                position: absolute;
+                top: 50%;
+                right: 17vw;
+                width: 12vw;
+                transform: translateY(-50%);
+                padding: 0.5vw 0.3vw 0.5vw 3vw;
+                color: #637893;
+                font-size: 1vw;
+                border: none;
+                border-radius: 0.3vw;
+                background-color: #f1f4fa;
+                background-image: url("{% static '/icons/search.png' %}");
+                background-size: auto 40%;
+                background-position: 8% 60%;
+                background-repeat: no-repeat;
+            }
+        </style>
+
+    </head>
+    <body>
+        <div id="header">
+            <a id="report-bug">Report a Bug</a>
+            <input id="header-search" placeholder="Search Communities"/>
+        </div>
+        {% block body %}
+        {% endblock %}
+
+        {% if editor %}
+        <script src="{% static 'pagedown/Markdown.Converter.js' %}"></script>
+        <script src="{% static 'pagedown/Markdown.Editor.js' %}"></script>
+        <script src="{% static 'pagedown/Markdown.Sanitizer.js' %}"></script>
+        <script>
+
+
+            function insertTab(o, e)
+            {		
+                var kC = e.keyCode ? e.keyCode : e.charCode ? e.charCode : e.which;
+                if (kC == 9 && !e.shiftKey && !e.ctrlKey && !e.altKey)
+                {
+                    var oS = o.scrollTop;
+                    if (o.setSelectionRange)
+                    {
+                        var sS = o.selectionStart;	
+                        var sE = o.selectionEnd;
+                        o.value = o.value.substring(0, sS) + "\t" + o.value.substr(sE);
+                        o.setSelectionRange(sS + 1, sS + 1);
+                        o.focus();
+                    }
+                    else if (o.createTextRange)
+                    {
+                        document.selection.createRange().text = "\t";
+                        e.returnValue = false;
+                    }
+                    o.scrollTop = oS;
+                    if (e.preventDefault)
+                    {
+                        e.preventDefault();
+                    }
+                    return false;
+                }
+                return true;
+            }
+
+            var converter = Markdown.getSanitizingConverter();
+            var editor = new Markdown.Editor(converter);
+            editor.run();
+        </script>
+        {% endif %}
+    </body>
+</html>

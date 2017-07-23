@@ -1,0 +1,34 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        {% block head %}
+        {% endblock %}
+
+        {% if preview %}
+        <link rel="stylesheet" href="{% static 'pagedown/pagedown_preview.css' %}" />
+        {% endif %}
+
+        {% if editor %}
+        <link rel="stylesheet" href="{% static 'pagedown/pagedown.css' %}" />
+        {% endif %}
+
+    </head>
+    <body>
+        {% block body %}
+        {% endblock %}
+
+        {% if editor %}
+        <script src="{% static 'pagedown/Markdown.Converter.js' %}"></script>
+        <script src="{% static 'pagedown/Markdown.Editor.js' %}"></script>
+        <script src="{% static 'pagedown/Markdown.Sanitizer.js' %}"></script>
+        <script>
+            var converter = Markdown.getSanitizingConverter();
+            var editor = new Markdown.Editor(converter);
+            editor.run();
+        </script>
+        {% endif %}
+    </body>
+</html>

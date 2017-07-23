@@ -1,0 +1,172 @@
+{% extends 'base/base.html' %}
+
+{% block title %} {{community}} - Ask Question {% endblock %}
+
+{% block head %}
+<style>
+    #title {
+        position: absolute;
+        top: 6vw;
+        left: 20vw;
+        width: 50vw;
+        font-size: 1.5vw;
+        border: none;
+        padding: 1vw;
+        border-bottom: 2px solid #333333;
+    }
+
+    #wmd-button-bar {
+        position: relative;
+        top: 12vw;
+        width: 50vw;
+        left: 20vw;
+    }
+
+   #wmd-input {
+        position: relative;
+        top: 12vw;
+        left: 20vw;
+        width: 50vw;
+   }
+
+   #wmd-preview {
+        position: relative;
+        top: 14vw;
+        left: -5vw;
+        width: 50vw;
+   }
+
+   #tags-cont {
+       position: absolute;
+       right: 4vw;
+       top: 10vw;
+   }
+
+   #searched-tag li, #selected-tag li {
+       list-style: none;
+   }
+
+   #submit {
+       position: relative;
+       top: 15vw;
+       left: 20vw;
+       color: #FF2A8F;
+       border: 1px solid #FF2A8F;
+       background: #ffffff;
+       padding: 1vw;
+       border-radius: 10px;
+       cursor: pointer;
+   }
+</style>
+{% endblock %}
+
+{% block body %}
+<input id="title" type="text" placeholder="Title"/>
+
+<div id="wmd-button-bar"></div>
+
+<textarea id="wmd-input" onkeydown="insertTab(this, event);" class="wmd-input"></textarea>
+<div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+
+<div id="tags-cont">
+    <input type="text" id="tag-search" placeholder="Add Tags"/>
+    <ul id="searched-tag">
+        
+    </ul>
+    <br/><br/><br/>
+    <ul id="selected-tag">
+        <p>Selected Tags:</p>
+    </ul>
+</div>
+<input type="button" id="submit" onclick="submit_question()" value="Submit Question" />
+<script>
+    var tag_list = [];
+	$("#tag-search").keyup(function() {	
+        var community_name = "{{ community }}";
+        
+		tag_text = $("#tag-search").val();
+		var data = JSON.stringify({
+			"tag_text": tag_text,
+            "community_name":community_name,
+            
+
+		});
+		$.post("..search/questions/",data,
+		function(data, status){
+			$('#searched-tag li').remove();
+			var tags = JSON.parse(data);
+			if (data!=' '){
+				for (i = 0; i < tags.length && i < 10; i++ ){
+					console.log("tags",tags);
+					var searched_tag_li = "<li onclick=\"get_tags(this, '"+ tags[i]+"')\" value="+tags[i]+">"+tags[i]+"</li>";
+					
+					$("#searched-tag").append(searched_tag_li);
+				}
+			}
+			else{
+				var community_li = '<li>'+"not found"+'</li>';
+				
+				$("#searched-tag").append(searched_question_li);
+			}
+			
+		});
+	});
+
+function submit_question() {
+    var q_title = $("#title").val();
+    var q_desc = $("#wmd-preview").html();
+    var q_tags = tag_list.join(' ');
+
+    //console.log(q_title, q_desc, q_tags);
+    
+    var form = document.createElement("form");
+    form.style.display = "none";
+    form.method = "POST";
+    form.action = "ask_question";
+
+    var title = document.createElement("input");
+    title.name = 'q_title';
+    title.value = q_title;
+    
+    var desc = document.createElement("textarea");
+    desc.name = 'q_desc';
+    desc.value = q_desc;
+    
+    var tags = document.createElement("input");
+    tags.name = 'q_tags';
+    tags.value = q_tags;
+    
+    form.appendChild(title);
+    form.appendChild(desc);
+    form.appendChild(tags);
+    
+    console.log(form);
+
+    document.body.appendChild(form);
+
+    form.submit();
+    
+}
+
+function get_tags(elem, tag) {
+
+    if(tag_list.indexOf(tag) < 0) {
+        tag_list.push(tag);
+        var selected_tag_li = "<li class='tags' onclick=\"remove_tag('"+tag+"')\" value="+tag+">"+tag+"</li>";
+        $("#selected-tag").append(selected_tag_li);
+    }
+
+    elem.style.display = 'none';
+}
+
+function remove_tag(tag) {
+    var index = tag_list.indexOf(tag);
+    if(index >= 0) {
+        var tags = document.getElementsByClassName('tags');
+        tags[index].remove();
+        tag_list.splice(index, 1);
+    }
+}
+
+</script>
+{% endblock %}

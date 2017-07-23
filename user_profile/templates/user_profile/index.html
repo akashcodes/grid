@@ -1,0 +1,32 @@
+<p>{{user.name}}</p>
+
+<div id="bounty">
+    <ul id="bounty-question">
+    
+    {% for i in user.questions_asked %}
+       <li onclick = "bounty_question('{{i.question_community}}/{{i.question_id}}/{{i.title}}')"><p>{{i.title}}</p></li>
+    {% endfor %}
+    </ul>
+    <input type="text" id="bounty-value" value="50">
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    function bounty_question(question){
+        question =question.split("/");
+        question_community = question[0];
+        question_id = question[1];
+        question_title =question[2];
+        bounty_rep = $("#bounty-value").val();
+        context =JSON.stringify( {
+            "question_community":question_community,
+            "question_id":question_id,
+            "bounty_rep":bounty_rep,
+            "question_title":question_title
+        })
+        $.post("../bounty/",context,
+		function(data, status){
+
+        })
+    };
+</script>
