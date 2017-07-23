@@ -1,0 +1,307 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+Home - {{ name }}
+{% endblock %}
+
+{% block head %}
+<style>
+    #communities-cont {
+        position: absolute;
+        width: 100vw;
+        height: 12vw;
+        top: 4vw;
+        text-align: center;
+        background-color: #b639fb;
+    }
+
+    .community-show {
+        display: inline-block;
+        position: relative;
+        top: 10%;
+        width: 20vw;
+        height: 90%;
+        margin-right: 2vw;
+        color: #ffffff;
+        background-color: #A34ED2;
+    }
+
+    .community-info {
+        margin-top: 1.5vw;
+        font-size: 1.8vw;
+        text-align: left;
+        padding-left: 1vw;
+        padding-right: 1vw;
+    }
+
+    .community-name {
+        position: absolute;
+        left: 0.7vw;
+        font-size: 1.8vw;
+        max-width: 50%;
+    }
+
+    .community-q-count {
+        position: absolute;
+        right: 1vw;
+        font-size: 0.8vw;
+        transform: translateY(80%);
+    }
+
+    .community-trending-link {
+        position: absolute;
+        width: 100%;
+        bottom: 0%;
+        font-size: 0.8vw;
+        padding-top: 1vw;
+        cursor: pointer;
+        padding-bottom: 1vw;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    #body-cont {
+        position: absolute;
+        top: 24vw;
+        width: 100vw;
+    }
+
+    #feed-wrapper {
+        position: absolute;
+        width: 55%;
+        left: 20%;
+    }
+
+    #feed-wrapper #feed {
+        position: relative;
+    }
+
+    .question {
+        position: relative;
+        padding: 1vw;
+    }
+
+    .question-favourite {
+        position: absolute;
+        width: 4vw;
+        height: 4vw;
+        background-image: url("{% static 'icons/star.png' %}");
+        background-size: 60% 60%;
+        background-repeat: no-repeat;
+    }
+
+    .question-info {
+        display: inline-block;
+        position: relative;
+        left: 6vw;
+        height: 6vw;
+    }
+
+    .question-title {
+        position: relative;
+        margin-bottom: 0.6vw;
+    }
+
+    .question-title a {
+        text-decoration: none;
+        font-size: 1.3vw;
+        color: #333333;
+    }
+
+    .question-meta {
+        position: relative;
+        width: 100%;
+    }
+
+    .question-owner {
+        display: inline-block;
+        position: relative;
+        margin-right: 3vw;
+        cursor: pointer;
+    }
+
+    .question-owner-picture {
+        display: inline-block;
+        position: relative;
+        width: 2.5vw;
+        height: 2.5vw;
+        border-radius: 100%;
+        vertical-align: middle;
+    }
+
+    .question-owner-name {
+        display: inline-block;
+        position: relative;
+        max-width: 8vw;
+        font-size: 1vw;
+        margin-left: 1vw;
+        vertical-align: middle;
+        color: #637893;
+    }
+
+    .question-tags {
+        display: inline-block;
+    }
+
+    .question-tags p {
+        display: inline-block;
+        position: relative;
+        max-width: 8vw;
+        padding: 0.25vw 1vw 0.25vw 1vw;
+        font-size: 0.8vw;
+        margin-right: 0.2vw;
+        vertical-align: middle;
+        color: #637893;
+        border: 1px solid #515153;
+        border-radius: 1000px;
+        cursor: pointer;
+    }
+
+    .question-details {
+        position: absolute;
+        right: 1vw;
+        top: 3.6vw;
+    }
+
+    .question-answers, .question-time {
+        display: inline-block;
+        position: relative;
+        max-width: 8vw;
+        padding: 0.25vw 1vw 0.25vw 2vw;
+        font-size: 0.8vw;
+        margin-left: 1.5vw;
+        vertical-align: middle;
+        color: #637893;
+        background-size: auto 80%;
+        background-repeat: no-repeat;
+        background-position-y: 40%;
+    }
+
+    .question-answers {
+        background-image: url("{% static 'icons/chat.png' %}");
+    }
+
+    .question-time {
+        background-image: url("{% static 'icons/time.png' %}");
+    }
+
+    #q-type-wrapper {
+        position: absolute;
+        left: 4vw;
+        top: 1vw;
+    }
+
+    #q-type-wrapper p {
+        font-size: 1.2vw;
+        margin-bottom: 1vw;
+    }
+
+    #q-type-wrapper p a {
+        text-decoration: none;
+        color: #637893;
+        font-weight: bold;
+    }
+
+    #q-type-wrapper p a.selected, #q-type-wrapper p a:hover {
+        color: #00e67e;
+    }
+
+    #communities-wrapper {
+        position: absolute;
+        right: 3vw;
+        border-left: 2px solid #515153;
+        padding: 2vw 0vw 2vw 2vw;
+    }
+
+    #communities-head {
+        position: relative;
+        font-size: 1.6vw;
+        left: -1vw;
+        margin-bottom: 1vw;
+    }
+
+    .community-main {
+        position: relative;
+        margin-bottom: 0.5vw;
+        font-size: 1vw;
+    }
+
+    .community-main a {
+        text-decoration: none;
+        color: #637893;
+
+    }
+
+</style>
+{% endblock %}
+
+{% block body %}
+
+<div id="communities-cont">
+    {% for i in top_communities %}
+    <div class="community-show">
+        <p class="community-info"><p class="community-name">{{ i.name }}</p> <p class="community-q-count">{{ i.q_count }} Discussions</p></p>
+        <p class="community-trending-link">Latest Trending Questions in {{ i.name }}</p>
+    </div>
+    {% endfor %}
+</div>
+
+<div id="body-cont">
+    <div id="q-type-wrapper">
+        <p><a href="#" {% if hot %}class="selected"{% endif %}>Hot</a></p>
+        <p><a href="#" {% if recent %}class="selected"{% endif %}>Recent</a></p>
+        <p><a href="#" {% if active %}class="selected"{% endif %}>Active</a></p>
+        <p><a href="#" {% if bounty %}class="selected"{% endif %}>Bounty</a></p>
+        <p><a href="#" {% if unanswered %}class="selected"{% endif %}>Unanswered</a></p>
+    </div>
+
+    <div id="feed-wrapper">
+        <div id="feed">
+            {% for i in questions %}
+            <div class="question">
+                <div class="question-favourite">
+
+                </div>
+                <div class="question-info">
+                    <p class="question-title">
+                        <a href="../question/{{i.question_community}}/{{i.question_id}}">{{i.question_title}}</a>
+                    </p>
+                    <div class="question-meta">
+                        <div class="question-owner">
+                            <img class="question-owner-picture" src="{{i.question_owner.profile_image}}" />
+                            <p class="question-owner-name">{{i.question_owner.display_name}}</p>
+                        </div>
+                        <div class="question-tags">
+                            {% for j in i.question_tags %}
+                            {% if forloop.counter < 3 %}
+                            <p>{{j}}</p>
+                            {% endif %}
+                            {% endfor %}
+
+                            <!--div class="more-tags-cont">
+                                {% for j in i.question_tags %}
+                                {% if forloop.counter > 2 %}
+                                <p>{{j}}</p>
+                                {% endif %}
+                                {% endfor %}
+                            </div-->
+                        </div>
+                    </div>
+                </div>
+                <div class="question-details">
+                    <p class="question-answers">{{i.answer_count}}</p>
+                    <p class="question-time">{{i.time}}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="communities-wrapper">
+        <p id="communities-head">Communities</p>
+        {% for i in communities %}
+            <p class="community-main"><a  href="../community/{{i.community}}/">{{i.name}}</a></p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
