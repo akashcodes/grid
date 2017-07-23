@@ -1,0 +1,142 @@
+{% extends 'base/base.html' %}
+
+{% block title %} Welcome, {{name}} {% endblock %}
+
+{% block head %}
+<style>
+	#suggested-communities-cont {
+		position: absolute;
+		display: flex;
+		width: 80vw;
+		left: 10vw;
+		top: 15vw;
+		flex-wrap: wrap;
+	}
+
+	.communities {
+		display: inline-flex;
+		color: #515153;
+		margin: 2vw;
+		padding: 0.5vw 1vw 0.5vw 1vw;
+		border: 1px solid #515153;
+		border-radius: 3vw;
+		cursor: pointer;
+		-webkit-user-select: none;  /* Chrome all / Safari all */
+		-moz-user-select: none;     /* Firefox all */
+		-ms-user-select: none;      /* IE 10+ */
+		user-select: none; 
+	}
+
+	.communities.selected {
+		background-color: #515153;
+		border-color: #ffffff;
+		color: #ffffff
+	}
+
+	#submit-communities {
+		position: absolute;
+		border: none;
+		font-size: 1.2vw;
+		background-color: transparent;
+		color: #00e67e;
+		border: 1px solid #00e67e;
+		padding: 0.5vw 3vw 0.5vw 3vw;
+		border-radius: 0.3vw;
+		bottom: 2vw;
+		right: 10vw;
+		cursor: pointer;
+	}
+
+	#greeting-text {
+		position: absolute;
+		top: 8vw;
+		font-size: 2vw;
+		color: #515153;
+		left: 8vw;
+	}
+
+	#greeting-text-2 {
+		position: absolute;
+		top: 12vw;
+		font-size: 1.5vw;
+		color: #515153;
+		left: 8vw;
+	}
+</style>
+{% endblock %}
+
+{% block body %}
+<p id="greeting-text">Just one more step ;)</p>
+<p id="greeting-text-2">Select communities you want to follow.</p>
+
+<div id="suggested-communities-cont">
+	{% for i in suggested_communities %}
+		<p class="communities"  onclick="select(this)" id="{{i.}}"><input style="display: none;" class="communities-checkbox" value="{{i.name}}" type="checkbox"/>{{i.name}}</p>
+	{% endfor %}
+</div>
+
+<input type="text" name="search-communities" id="search-communities">
+<ul id="searched-community">
+
+</ul>
+<input type="button" value="Done" id="submit-communities" />
+<script>
+	function select(elem) {
+		var fc = elem.firstChild;
+		if(fc.checked){
+			elem.className = 'communities';
+			fc.checked = false;
+			console.log("True", elem);
+		} else {
+			elem.className = 'communities selected';
+			fc.checked = true;
+			console.log("False", elem);
+		}
+	}
+
+	$("#search-communities").keyup(function()
+	{	var community_name;
+		community_name = $("#search-communities").val();
+		var data = JSON.stringify({
+			"name": community_name
+		});
+		$.post("/login/get-communities/",data,
+		function(data, status){
+			$('#searched-community li').remove();
+			communities = JSON.parse(data);
+			dataLength = communities.length;
+			if (data!=' '){
+				for (i = 0; i < dataLength; i++ ){
+					console.log("data",data);
+					var community_li = "<li><input class='communities-checkbox' value='"+communities[i]+ "' type='checkbox'/>"+communities[i]+"</li>";
+					
+					$("#searched-community").append(community_li);
+				}
+			}
+			else{
+				var community_li = '<li>'+"not found"+'</li>';
+				
+				$("#searched-community").append(community_li);
+			}
+			
+		});
+	});
+
+
+	$("#submit-communities").click(function() {
+		var community_fields = document.getElementsByClassName("communities-checkbox");
+		var communities = [];
+		for(var i = 0; i < community_fields.length; i++) {
+			if(community_fields[i].checked)
+				communities.push(community_fields[i].value.replace(" ", "_"));
+		}
+		data = JSON.stringify({"communities":communities});
+		$.post("/login/create-user/",data,
+		
+		function(data, status){
+			window.location.href = "/home";
+		});
+
+	})
+</script>
+{% endblock %}

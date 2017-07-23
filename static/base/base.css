@@ -1,0 +1,12 @@
+
+@font-face {
+    font-family: segoe;
+    src: url('segoeui.ttf');
+}
+
+
+* {
+    margin: 0px;
+    padding: 0px;
+    font-family: segoe;
+}

@@ -1,0 +1,13 @@
+{% extends 'base/base.html' %}
+
+
+{% block head %}
+
+{% endblock %}
+{% block body %}
+<h1>{{question.title}}</h1>
+<p>{{question.owner.display_name}}</p>
+<img src="{{question.owner.profile_image}}}">
+
+<textarea id="wmd-input" class="wmd-input"></textarea>
+{% endblock %}

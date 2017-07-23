@@ -1,0 +1,143 @@
+{% extends 'base/base.html' %}
+
+{% block title %} Welcome, {{name}} {% endblock %}
+
+{% block head %}
+<style>
+	#suggested-tags-cont {
+		position: absolute;
+		display: flex;
+		width: 80vw;
+		left: 10vw;
+		top: 15vw;
+		flex-wrap: wrap;
+	}
+
+	.tags {
+		display: inline-flex;
+		color: #515153;
+		margin: 2vw;
+		padding: 0.5vw 1vw 0.5vw 1vw;
+		border: 1px solid #515153;
+		border-radius: 3vw;
+		cursor: pointer;
+		-webkit-user-select: none;  /* Chrome all / Safari all */
+		-moz-user-select: none;     /* Firefox all */
+		-ms-user-select: none;      /* IE 10+ */
+		user-select: none; 
+	}
+
+	.tags.selected {
+		background-color: #515153;
+		border-color: #ffffff;
+		color: #ffffff
+	}
+
+	#submit-tags {
+		position: absolute;
+		border: none;
+		font-size: 1.2vw;
+		background-color: transparent;
+		color: #00e67e;
+		border: 1px solid #00e67e;
+		padding: 0.5vw 3vw 0.5vw 3vw;
+		border-radius: 0.3vw;
+		bottom: 6vw;
+		right: 15vw;
+		cursor: pointer;
+	}
+
+	#greeting-text {
+		position: absolute;
+		top: 8vw;
+		font-size: 2vw;
+		color: #515153;
+		left: 8vw;
+	}
+
+	#greeting-text-2 {
+		position: absolute;
+		top: 12vw;
+		font-size: 1.5vw;
+		color: #515153;
+		left: 8vw;
+	}
+</style>
+{% endblock %}
+
+{% block body %}
+<p id="greeting-text">Hi, {{name}}</p>
+<p id="greeting-text-2">What are you interested in?</p>
+<div id="suggested-tags-cont">
+	{% for i in suggested_tags %}
+		<p class="tags" id="{{i}}" onclick="select(this)"><input style='display: none' class="tags-checkbox" value="{{i}}" type="checkbox"/>{{i}}</p>
+	{% endfor %}
+</div>
+
+<input type="text" name="search-tags" id="search-tags">
+<ul id="searched-tag">
+
+</ul>
+<input type="button" value="Next" id="submit-tags" />
+<script>
+
+	function select(elem) {
+		var fc = elem.firstChild;
+		if(fc.checked){
+			elem.className = 'tags';
+			fc.checked = false;
+			console.log("True", elem);
+		} else {
+			elem.className = 'tags selected';
+			fc.checked = true;
+			console.log("False", elem);
+		}
+	}
+
+	$("#search-tags").keyup(function()
+	{	var tag_name;
+		tag_name = $("#search-tags").val();
+		var data = JSON.stringify({
+			"name": tag_name
+		});
+		$.post("/login/get-tags/",data,
+		function(data, status){
+			$('#searched-tag li').remove();
+			tags = JSON.parse(data);
+			dataLength = tags.length;
+			if (data!=' ') {
+				for (i = 0; i < dataLength; i++ ) {
+					console.log("data",data);
+					var tag_li = "<li><input class='tags-checkbox' value='"+tags[i]+ "' type='checkbox'/>"+tags[i]+"</li>";
+					
+					$("#searched-tag").append(tag_li);
+				}
+			} else {
+				var tag_li = '<li>'+"not found"+'</li>';
+				
+				$("#searched-tag").append(tag_li);
+			}
+		});
+	});
+
+
+	$("#submit-tags").click(function() {
+		var tag_fields = document.getElementsByClassName("tags-checkbox");
+		var tags = [];
+		for(var i = 0; i < tag_fields.length; i++) {
+			if(tag_fields[i].checked)
+				tags.push(tag_fields[i].value.replace(" ", "_"));
+		}
+		var form = document.createElement("form");
+		form.method = "POST";
+		form.action = "communities/";
+		var tags_field = document.createElement("input");
+		tags_field.name = "tags";
+		tags_field.value = tags.join(' ');
+		form.appendChild(tags_field);
+		document.body.appendChild(form);
+		console.log(form, tags_field, tags);
+		form.submit();
+	});
+</script>
+{% endblock %}
