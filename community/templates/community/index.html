@@ -1,0 +1,392 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+
+{% block title %}Community - {{community_name}}{% endblock %}
+
+{% block head %}
+
+<style>
+	#community-head-cont {
+		position: absolute;
+		width: 100vw;
+		height: 7vw;
+		top: 4vw;
+		background-color: #FF2A8F;
+	}
+
+	#community-head {
+		display: inline-block;
+		position: absolute;
+		top: 50%;
+		left: 8vw;
+		font-size: 3vw;
+		padding: 0vw 3vw 0vw 0vw;
+		transform: translateY(-50%);
+		background-image: url("{% static 'icons/star.png' %}");
+		background-size: auto 50%;
+		background-position: 100% 65%;
+		background-repeat: no-repeat;
+		color: #ffffff;
+		cursor: pointer;
+	}
+
+	#community-head.selected {
+		background-image: url("{% static 'icons/star1.png' %}");
+	}
+
+	#community-head input {
+		display: none;
+	}
+
+	#community-description {
+		display: inline-block;
+		position: relative;
+		width: 90vw;
+		left: 5vw;
+		top: 15vw;
+		font-size: 1.4vw;
+		padding: 0vw 4vw 0vw 0vw;
+		transform: translateY(-50%);
+		background-size: auto 50%;
+		background-position: 100% 65%;
+		background-repeat: no-repeat;
+		color: #637893;
+	}
+
+	#body-cont {
+        position: absolute;
+        top: 28vw;
+        width: 100vw;
+    }
+
+    #feed-wrapper {
+        position: absolute;
+        width: 55%;
+        left: 30%;
+    }
+
+    #feed-wrapper #feed {
+        position: relative;
+    }
+
+    .question {
+        position: relative;
+        padding: 1vw;
+    }
+
+    .question-favourite {
+        position: absolute;
+        width: 4vw;
+        height: 4vw;
+        background-image: url("{% static 'icons/star.png' %}");
+        background-size: 60% 60%;
+        background-repeat: no-repeat;
+    }
+
+    .question-info {
+        display: inline-block;
+        position: relative;
+        left: 6vw;
+        height: 6vw;
+    }
+
+    .question-title {
+        position: relative;
+        margin-bottom: 0.6vw;
+    }
+
+    .question-title a {
+        text-decoration: none;
+        font-size: 1.3vw;
+        color: #333333;
+    }
+
+    .question-meta {
+        position: relative;
+        width: 100%;
+    }
+
+    .question-owner {
+        display: inline-block;
+        position: relative;
+        margin-right: 3vw;
+        cursor: pointer;
+    }
+
+    .question-owner-picture {
+        display: inline-block;
+        position: relative;
+        width: 2.5vw;
+        height: 2.5vw;
+        border-radius: 100%;
+        vertical-align: middle;
+    }
+
+    .question-owner-name {
+        display: inline-block;
+        position: relative;
+        max-width: 8vw;
+        font-size: 1vw;
+        margin-left: 1vw;
+        vertical-align: middle;
+        color: #637893;
+    }
+
+    .question-tags {
+        display: inline-block;
+    }
+
+    .question-tags p {
+        display: inline-block;
+        position: relative;
+        max-width: 8vw;
+        padding: 0.25vw 1vw 0.25vw 1vw;
+        font-size: 0.8vw;
+        margin-right: 0.2vw;
+        vertical-align: middle;
+        color: #637893;
+        border: 1px solid #515153;
+        border-radius: 1000px;
+        cursor: pointer;
+    }
+
+    .question-details {
+        position: absolute;
+        right: 1vw;
+        top: 3.6vw;
+    }
+
+    .question-answers, .question-time {
+        display: inline-block;
+        position: relative;
+        max-width: 8vw;
+        padding: 0.25vw 1vw 0.25vw 2vw;
+        font-size: 0.8vw;
+        margin-left: 1.5vw;
+        vertical-align: middle;
+        color: #637893;
+        background-size: auto 80%;
+        background-repeat: no-repeat;
+        background-position-y: 40%;
+    }
+
+    .question-answers {
+        background-image: url("{% static 'icons/chat.png' %}");
+    }
+
+    .question-time {
+        background-image: url("{% static 'icons/time.png' %}");
+    }
+
+    #q-type-wrapper {
+        position: absolute;
+        right: 15vw;
+        top: -5vw;
+        padding-left: 1vw;
+        border-bottom: 2px solid #333333;
+    }
+
+    #q-type-wrapper p {
+        display: inline-block;
+        margin-right: 1vw;
+        font-size: 1.2vw;
+        margin-bottom: 1vw;
+    }
+
+    #q-type-wrapper p a {
+        text-decoration: none;
+        color: #637893;
+        font-weight: bold;
+    }
+
+    #q-type-wrapper p a.selected, #q-type-wrapper p a:hover {
+        color: #00e67e;
+    }
+
+    #community-links-wrapper {
+        position: absolute;
+        left: 4vw;
+        top: 4vw;
+    }
+
+    #community-links-wrapper p {
+        font-size: 1.2vw;
+        margin-bottom: 1vw;
+        padding-left: 2vw;
+        background-size: auto 80%;
+        background-position-y: 80%;
+        background-repeat: no-repeat;
+    }
+
+    #community-links-wrapper p a {
+        text-decoration: none;
+        color: #637893;
+        font-weight: bold;
+    }
+
+    #community-links-wrapper p:nth-child(1) {
+        background-image: url("{% static 'icons/graph.png' %}");
+    }
+    #community-links-wrapper p:nth-child(2) {
+        background-image: url("{% static 'icons/chat1.png' %}");
+    }
+    #community-links-wrapper p:nth-child(3) {
+        background-image: url("{% static 'icons/star.png' %}");
+    }
+    #community-links-wrapper p:nth-child(4) {
+        background-image: url("{% static 'icons/graph.png' %}");
+    }
+
+    #community-links-wrapper p a.selected, #community-links-wrapper p a:hover {
+        color: #00e67e;
+    }
+
+    #ask-question {
+        position: absolute;
+        font-size: 1vw;
+        left: 4vw;
+        top: -4vw;
+        padding: 1vw 2vw 1vw 2vw;
+        border-radius: 0.4vw;
+        text-decoration: none;
+        font-weight: bold;
+        color: #ffffff;
+        background-color: #00e67e;
+    }
+
+    #twitter-trend {
+        position: absolute;
+        font-size: 1vw;
+        right: 6vw;
+        top: 2vw;
+        padding: 1vw 2vw 1vw 2vw;
+        border-radius: 0.4vw;
+        text-decoration: none;
+        color: #ffffff;
+        background-color: #00e67e;
+    }
+</style>
+
+{% endblock %}
+
+{% block body %}
+
+<div id="community-head-cont">
+	<p id="community-head" class="selected">{{community_name}} <input type="checkbox" /></p>
+    <a id="twitter-trend" href="#">Check Twitter Trend</a>
+</div>
+
+<p id="community-description">
+	Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
+	Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
+	when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+</p>
+
+<div id="body-cont">
+
+    <a id="ask-question" href="/community/{{community_name}}/ask_question/">Start a Discussion</a>
+
+    <div id="community-links-wrapper">
+        <p><a href="/home" {% if hot %}class="selected"{% endif %}>Home</a></p>
+        <p><a href="/community/{{community_name}}/" {% if recent %}class="selected"{% endif %}>All Discussions</a></p>
+        <p><a href="#" {% if active %}class="selected"{% endif %}>Following Discussions</a></p>
+        <p><a href="#" {% if bounty %}class="selected"{% endif %}>Statistics</a></p>
+    </div>
+
+    <div id="q-type-wrapper">
+        <p><a href="#" {% if hot %}class="selected"{% endif %}>Hot</a></p>
+        <p><a href="#" {% if recent %}class="selected"{% endif %}>Recent</a></p>
+        <p><a href="#" {% if active %}class="selected"{% endif %}>Active</a></p>
+        <p><a href="#" {% if bounty %}class="selected"{% endif %}>Bounty</a></p>
+        <p><a href="#" {% if unanswered %}class="selected"{% endif %}>Unanswered</a></p>
+    </div>
+
+    <div id="feed-wrapper">
+        <div id="feed">
+            {% for i in questions %}
+            <div class="question">
+                <div class="question-favourite">
+
+                </div>
+                <div class="question-info">
+                    <p class="question-title">
+                        <a href="/community/{{i.question_community}}/question/{{i.question_id}}">{{i.question_title}}</a>
+                    </p>
+                    <div class="question-meta">
+                        <div class="question-owner">
+                            <img class="question-owner-picture" src="{{i.question_owner.profile_image}}" />
+                            <p class="question-owner-name">{{i.question_owner.display_name}}</p>
+                        </div>
+                        <div class="question-tags">
+                            {% for j in i.question_tags %}
+                            {% if forloop.counter < 3 %}
+                            <p>{{j}}</p>
+                            {% endif %}
+                            {% endfor %}
+
+                            <!--div class="more-tags-cont">
+                                {% for j in i.question_tags %}
+                                {% if forloop.counter > 2 %}
+                                <p>{{j}}</p>
+                                {% endif %}
+                                {% endfor %}
+                            </div-->
+                        </div>
+                    </div>
+                </div>
+                <div class="question-details">
+                    <p class="question-answers">{{i.answer_count}}</p>
+                    <p class="question-time">{{i.time}}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!--ul id="questions">
+	{% for i in questions %}
+       <a href="../{{community_name}}/question/{{i.question_id}}"> <li id="question"  >{{i.question_title}}</li></a>
+    {% endfor %}
+</ul-->
+<ul id="searched-question">
+
+</ul>
+<input type="text" name="search-question-box" id="search-question-box">
+
+<script>
+	$("#search-question-box").keyup(function()
+	{	var community_name = "{{ community_name }}";
+        
+		question_text = $("#search-question-box").val();
+		var data = JSON.stringify({
+			"question_text": question_text,
+            "community_name":community_name,
+
+		});
+		$.post("..search/questions/",data,
+		function(data, status){
+			$('#searched-question li').remove();
+            console.log(data)
+			question = JSON.parse(data)
+			dataLength = question.length;
+			if (data!=' '){
+				for (i = 0; i < dataLength; i++ ){
+					console.log("data",data);
+					var searched_question_li = "<a href='../../"+community_name+"/question/"+question[i].question_id+"'><li>"+question[i].title+"</li></a>";
+					//var searched_question_li = "<a href='../../question/"+community_name/question[i].title+"'><li>"+question[i]+"</li></a>";
+					
+					$("#searched-question").append(searched_question_li);
+				}
+			}
+			else{
+				var searched_question_li = '<li>'+"not found"+'</li>';
+				
+				$("#searched-community").append(searched_question_li);
+			}
+			
+		});
+	});
+</script>
+
+{% endblock %}
